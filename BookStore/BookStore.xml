@@ -26,5 +26,20 @@
             <param name="tokenType">Token Type</param>
             <returns>It return token else exception</returns>
         </member>
+        <member name="M:BookStore.Controllers.UserController.GenerateToken(BookStoreCommonLayer.ResponseModels.RegistrationResponse,System.String)">
+            <summary>
+            Generate Token
+            </summary>
+            <param name="userDetails">User Details</param>
+            <param name="tokenType">Token Type</param>
+            <returns>It returns token</returns>
+        </member>
+        <member name="M:BookStore.Controllers.UserController.ValidateRegisterRequest(BookStoreCommonLayer.RequestModels.RegistrationRequest)">
+            <summary>
+            It Validate Registration Request
+            </summary>
+            <param name="userDetails">User Details</param>
+            <returns>If validation successfull return true else false</returns>
+        </member>
     </members>
 </doc>

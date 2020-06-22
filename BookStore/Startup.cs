@@ -95,6 +95,8 @@ namespace BookStore
 
             services.AddScoped<IAdminBusiness, AdminBusiness>();
             services.AddScoped<IAdminRepository, AdminRepository>();
+            services.AddScoped<IUserBusiness, UserBusiness>();
+            services.AddScoped<IUserRepository, UserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
