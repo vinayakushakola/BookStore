@@ -26,4 +26,15 @@ namespace BookStoreCommonLayer.RequestModels
         [MinLength(5, ErrorMessage = "Your Password Should be Minimum Length of 5")]
         public string Password { get; set; }
     }
+
+    public class AdminLogin
+    {
+        [Required]
+        [EmailAddress(ErrorMessage = "Please Enter a Proper Email-ID")]
+        public string Email { get; set; }
+
+        [Required]
+        [MinLength(5, ErrorMessage = "Your Password Should be Minimum Length of 5")]
+        public string Password { get; set; }
+    }
 }
