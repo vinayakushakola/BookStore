@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BookStore</name>
+    </assembly>
+    <members>
+        <member name="M:BookStore.Controllers.AdminController.Registration(BookStoreCommonLayer.RequestModels.AdminRegistrationRequest)">
+            <summary>
+            Admin Registration
+            </summary>
+            <param name="adminDetails">Admin Registration Details</param>
+            <returns>If data found return Ok else null or Bad request</returns>
+        </member>
+        <member name="M:BookStore.Controllers.AdminController.GenerateToken(BookStoreCommonLayer.ResponseModels.AdminRegistrationResponse,System.String)">
+            <summary>
+            Generates Token
+            </summary>
+            <param name="adminDetails">Admin Response Details</param>
+            <param name="tokenType">Token Type</param>
+            <returns>It return token else exception</returns>
+        </member>
+    </members>
+</doc>
