@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\BookStoreCommonLayer\BookStoreCommonLayer.csproj" />
+    <ProjectReference Include="..\BookStoreRepositoryLayer\BookStoreRepositoryLayer.csproj" />
   </ItemGroup>
 
 </Project>
