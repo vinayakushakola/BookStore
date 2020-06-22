@@ -60,20 +60,7 @@ namespace BookStoreRepositoryLayer.Services
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
-                    while (dataReader.Read())
-                    {
-                        responseData = new AdminRegistrationResponse
-                        {
-                            AdminID = Convert.ToInt32(dataReader["AdminID"]),
-                            FirstName = dataReader["FirstName"].ToString(),
-                            LastName = dataReader["LastName"].ToString(),
-                            Email = dataReader["Email"].ToString(),
-                            IsActive = Convert.ToBoolean(dataReader["IsActive"]),
-                            UserRole = dataReader["UserRole"].ToString(),
-                            CreatedDate = Convert.ToDateTime(dataReader["CreatedDate"]),
-                            ModifiedDate = Convert.ToDateTime(dataReader["ModifiedDate"])
-                        };
-                    }
+                    responseData = AdminRegistrationResponseModel(dataReader);
                 };
                 return responseData;
             }
@@ -103,21 +90,7 @@ namespace BookStoreRepositoryLayer.Services
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
-
-                    while (dataReader.Read())
-                    {
-                        responseData = new AdminRegistrationResponse()
-                        {
-                            AdminID = Convert.ToInt32(dataReader["AdminID"]),
-                            FirstName = dataReader["FirstName"].ToString(),
-                            LastName = dataReader["LastName"].ToString(),
-                            Email = dataReader["Email"].ToString(),
-                            IsActive = Convert.ToBoolean(dataReader["IsActive"]),
-                            UserRole = dataReader["UserRole"].ToString(),
-                            CreatedDate = Convert.ToDateTime(dataReader["CreatedDate"]),
-                            ModifiedDate = Convert.ToDateTime(dataReader["ModifiedDate"])
-                        };
-                    }
+                    responseData = AdminRegistrationResponseModel(dataReader);
                 };
                 return responseData;
             }
@@ -127,5 +100,36 @@ namespace BookStoreRepositoryLayer.Services
             }
         }
 
+        /// <summary>
+        /// Admin Registration Response Method
+        /// </summary>
+        /// <param name="dataReader">Sql Data Reader</param>
+        /// <returns>It return Response Data or Exception</returns>
+        private AdminRegistrationResponse AdminRegistrationResponseModel(SqlDataReader dataReader)
+        {
+            try
+            {
+                AdminRegistrationResponse responseData = null;
+                while (dataReader.Read())
+                {
+                    responseData = new AdminRegistrationResponse()
+                    {
+                        AdminID = Convert.ToInt32(dataReader["AdminID"]),
+                        FirstName = dataReader["FirstName"].ToString(),
+                        LastName = dataReader["LastName"].ToString(),
+                        Email = dataReader["Email"].ToString(),
+                        IsActive = Convert.ToBoolean(dataReader["IsActive"]),
+                        UserRole = dataReader["UserRole"].ToString(),
+                        CreatedDate = Convert.ToDateTime(dataReader["CreatedDate"]),
+                        ModifiedDate = Convert.ToDateTime(dataReader["ModifiedDate"])
+                    };
+                }
+                return responseData;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

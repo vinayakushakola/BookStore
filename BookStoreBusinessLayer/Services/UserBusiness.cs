@@ -24,25 +24,62 @@ namespace BookStoreBusinessLayer.Services
 
         public async Task<RegistrationResponse> UserRegistration(RegistrationRequest userDetails)
         {
-            if (userDetails == null)
-                return null;
-            else
-                return await _userRepository.UserRegistration(userDetails);
+            try
+            {
+                if (userDetails == null)
+                    return null;
+                else
+                    return await _userRepository.UserRegistration(userDetails);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Task<RegistrationResponse> UserLogin(LoginRequest loginDetails)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(loginDetails.Email) || string.IsNullOrWhiteSpace(loginDetails.Password))
+                    return null;
+                else
+                    return _userRepository.UserLogin(loginDetails);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public Task<RegistrationResponse> ForgotPassword(ForgotPasswordRequest forgotPassword)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (string.IsNullOrWhiteSpace(forgotPassword.Email))
+                    return null;
+                else
+                    return _userRepository.ForgotPassword(forgotPassword);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
-        public Task<bool> ResetPassword(ResetPasswordRequest resetPassword)
+        public async Task<bool> ResetPassword(int userID, ResetPasswordRequest resetPassword)
         {
-            throw new NotImplementedException();
+            try
+            {
+                if (userID <= 0 || resetPassword.Password == null)
+                    return false;
+                else
+                    return await _userRepository.ResetPassword(userID, resetPassword);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

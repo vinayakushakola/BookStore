@@ -18,6 +18,6 @@ namespace BookStoreBusinessLayer.Interfaces
 
         Task<RegistrationResponse> ForgotPassword(ForgotPasswordRequest forgotPassword);
 
-        Task<bool> ResetPassword(ResetPasswordRequest resetPassword);
+        Task<bool> ResetPassword(int userID, ResetPasswordRequest resetPassword);
     }
 }

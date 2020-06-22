@@ -39,8 +39,9 @@ namespace BookStore.Controllers
         /// Admin Registration
         /// </summary>
         /// <param name="adminDetails">Admin Registration Details</param>
-        /// <returns>If data found return Ok else null or Bad request</returns>
+        /// <returns>If data found return Ok else Not Found or Bad Request</returns>
         [HttpPost]
+        [Route("Registration")]
         public async Task<IActionResult> Registration(AdminRegistrationRequest adminDetails)
         {
             try
@@ -69,7 +70,7 @@ namespace BookStore.Controllers
         /// Admin Login
         /// </summary>
         /// <param name="loginDetails">Admin Login Details</param>
-        /// <returns>If data found return Ok else null or Bad request</returns>
+        /// <returns>If data found return Ok else Not Found or Bad Request</returns>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> AdminLogin(AdminLoginRequest loginDetails)
@@ -87,7 +88,7 @@ namespace BookStore.Controllers
                 else
                 {
                     message = "No Admin Account Present with this Email-ID and Password";
-                    return Ok(new { success, message });
+                    return NotFound(new { success, message });
                 }
             }
             catch (Exception ex)
