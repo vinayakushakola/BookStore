@@ -13,5 +13,7 @@ namespace BookStoreBusinessLayer.Interfaces
     public interface IAdminBusiness
     {
         Task<AdminRegistrationResponse> AdminRegistration(AdminRegistrationRequest adminDetails);
+
+        Task<AdminRegistrationResponse> AdminLogin(AdminLoginRequest loginDetails);
     }
 }

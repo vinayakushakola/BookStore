@@ -11,6 +11,13 @@
             <param name="adminDetails">Admin Registration Details</param>
             <returns>If data found return Ok else null or Bad request</returns>
         </member>
+        <member name="M:BookStore.Controllers.AdminController.AdminLogin(BookStoreCommonLayer.RequestModels.AdminLoginRequest)">
+            <summary>
+            Admin Login
+            </summary>
+            <param name="loginDetails">Admin Login Details</param>
+            <returns>If data found return Ok else null or Bad request</returns>
+        </member>
         <member name="M:BookStore.Controllers.AdminController.GenerateToken(BookStoreCommonLayer.ResponseModels.AdminRegistrationResponse,System.String)">
             <summary>
             Generates Token

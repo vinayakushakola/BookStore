@@ -27,7 +27,7 @@ namespace BookStoreCommonLayer.RequestModels
         public string Password { get; set; }
     }
 
-    public class AdminLogin
+    public class AdminLoginRequest
     {
         [Required]
         [EmailAddress(ErrorMessage = "Please Enter a Proper Email-ID")]

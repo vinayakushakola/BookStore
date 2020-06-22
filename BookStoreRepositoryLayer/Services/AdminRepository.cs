@@ -82,5 +82,50 @@ namespace BookStoreRepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Verify Admin Login Details
+        /// </summary>
+        /// <param name="loginDetails">Admin Login Details</param>
+        /// <returns>If data verified, return response data else ull or exception</returns>
+        public async Task<AdminRegistrationResponse> AdminLogin(AdminLoginRequest loginDetails)
+        {
+            try
+            {
+                AdminRegistrationResponse responseData = null;
+                SQLConnection();
+                using (SqlCommand cmd = new SqlCommand("ValidateAdminLogin", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", loginDetails.Email);
+                    cmd.Parameters.AddWithValue("@Password", loginDetails.Password);
+                    cmd.Parameters.AddWithValue("@UserRole", _admin);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+
+                    while (dataReader.Read())
+                    {
+                        responseData = new AdminRegistrationResponse()
+                        {
+                            AdminID = Convert.ToInt32(dataReader["AdminID"]),
+                            FirstName = dataReader["FirstName"].ToString(),
+                            LastName = dataReader["LastName"].ToString(),
+                            Email = dataReader["Email"].ToString(),
+                            IsActive = Convert.ToBoolean(dataReader["IsActive"]),
+                            UserRole = dataReader["UserRole"].ToString(),
+                            CreatedDate = Convert.ToDateTime(dataReader["CreatedDate"]),
+                            ModifiedDate = Convert.ToDateTime(dataReader["ModifiedDate"])
+                        };
+                    }
+                };
+                return responseData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

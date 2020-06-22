@@ -28,5 +28,13 @@ namespace BookStoreBusinessLayer.Services
             else
                 return await _adminRepository.AdminRegistration(adminDetails);
         }
+
+        public async Task<AdminRegistrationResponse> AdminLogin(AdminLoginRequest loginDetails)
+        {
+            if (loginDetails == null)
+                return null;
+            else
+                return await _adminRepository.AdminLogin(loginDetails);
+        }
     }
 }

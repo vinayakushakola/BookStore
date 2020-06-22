@@ -66,6 +66,37 @@ namespace BookStore.Controllers
         }
 
         /// <summary>
+        /// Admin Login
+        /// </summary>
+        /// <param name="loginDetails">Admin Login Details</param>
+        /// <returns>If data found return Ok else null or Bad request</returns>
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> AdminLogin(AdminLoginRequest loginDetails)
+        {
+            try
+            {
+                var data = await _adminBusiness.AdminLogin(loginDetails);
+                if (data != null)
+                {
+                    success = true;
+                    message = "Admin Successfully Logged In";
+                    token = GenerateToken(data, "login");
+                    return Ok(new { success, message, data, token });
+                }
+                else
+                {
+                    message = "No Admin Account Present with this Email-ID and Password";
+                    return Ok(new { success, message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Generates Token
         /// </summary>
         /// <param name="adminDetails">Admin Response Details</param>

@@ -14,5 +14,7 @@ namespace BookStoreRepositoryLayer.Interfaces
     public interface IAdminRepository
     {
         Task<AdminRegistrationResponse> AdminRegistration(AdminRegistrationRequest adminDetails);
+
+        Task<AdminRegistrationResponse> AdminLogin(AdminLoginRequest loginDetails);
     }
 }
