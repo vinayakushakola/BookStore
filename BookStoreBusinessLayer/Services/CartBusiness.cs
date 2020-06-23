@@ -9,6 +9,7 @@ using BookStoreCommonLayer.RequestModels;
 using BookStoreCommonLayer.ResponseModels;
 using BookStoreRepositoryLayer.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BookStoreBusinessLayer.Services
@@ -22,11 +23,30 @@ namespace BookStoreBusinessLayer.Services
             _cartRepository = cartRepository;
         }
 
+        public async Task<List<BookResponse>> GetListOfBooksInCart(int userID)
+        {
+            try
+            {
+                if (userID <= 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return await _cartRepository.GetListOfBooksInCart(userID);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<BookResponse> AddBookIntoCart(int userID, CartRequest cart)
         {
             try
             {
-                if (cart == null)
+                if (userID <= 0 || cart == null)
                 {
                     return null;
                 }

@@ -39,6 +39,12 @@
             <param name="book">Book Data</param>
             <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         </member>
+        <member name="M:BookStore.Controllers.CartController.GetListOgBooksInCart">
+            <summary>
+            Shows All Books in Cart
+            </summary>
+            <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        </member>
         <member name="M:BookStore.Controllers.CartController.AddBookIntoCart(BookStoreCommonLayer.RequestModels.CartRequest)">
             <summary>
             Add Book into Cart
