@@ -1,0 +1,17 @@
+﻿//
+// Author    : Vinayak Ushakola
+// Date      : 21 June 2020
+// Purpose   : Interface of Cart Business
+//
+
+using BookStoreCommonLayer.RequestModels;
+using BookStoreCommonLayer.ResponseModels;
+using System.Threading.Tasks;
+
+namespace BookStoreBusinessLayer.Interfaces
+{
+    public interface ICartBusiness
+    {
+        Task<BookResponse> AddBookIntoCart(int userID, CartRequest cart);
+    }
+}
