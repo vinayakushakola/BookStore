@@ -52,6 +52,13 @@
             <param name="cart">Cart Data</param>
             <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         </member>
+        <member name="M:BookStore.Controllers.CartController.DeleteBookFromCart(BookStoreCommonLayer.RequestModels.CartRequest)">
+            <summary>
+            Delete Book From Cart
+            </summary>
+            <param name="cart">Cart Data</param>
+            <returns>If Data Deleted return Ok else Not Found or Bad Request</returns>
+        </member>
         <member name="M:BookStore.Controllers.UserController.Registration(BookStoreCommonLayer.RequestModels.RegistrationRequest)">
             <summary>
             User Registration

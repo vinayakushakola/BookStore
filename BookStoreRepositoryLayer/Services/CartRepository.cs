@@ -94,6 +94,39 @@ namespace BookStoreRepositoryLayer.Services
         }
 
         /// <summary>
+        /// Delete Book From the Cart in the database
+        /// </summary>
+        /// <param name="userID">User-ID</param>
+        /// <param name="cart">Cart Data</param>
+        /// <returns>If Data Deleted Successfull return true else false or Exception</returns>
+        public async Task<bool> DeleteBookFromCart(int userID, CartRequest cart)
+        {
+            try
+            {
+                SQLConnection();
+                using (SqlCommand cmd = new SqlCommand("DeleteBookFromCart", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.Parameters.AddWithValue("@BookID", cart.BookID);
+
+                    conn.Open();
+                    int count = await cmd.ExecuteNonQueryAsync();
+                    if (count >= 0)
+                    {
+                        return true;
+                    }
+                };
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        /// <summary>
         /// Book Response Method
         /// </summary>
         /// <param name="dataReader">Sql Data Reader</param>

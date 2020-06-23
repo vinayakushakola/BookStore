@@ -46,7 +46,7 @@ namespace BookStoreBusinessLayer.Services
         {
             try
             {
-                if (userID <= 0 || cart == null)
+                if (userID <= 0 || cart.BookID == 0)
                 {
                     return null;
                 }
@@ -60,5 +60,25 @@ namespace BookStoreBusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<bool> DeleteBookFromCart(int userID, CartRequest cart)
+        {
+            try
+            {
+                if (userID <= 0 || cart.BookID <= 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return await _cartRepository.DeleteBookFromCart(userID, cart);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }
