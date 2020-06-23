@@ -101,6 +101,8 @@ namespace BookStore
             services.AddScoped<IBookRepository, BookRepository>();
             services.AddScoped<ICartBusiness, CartBusiness>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IWishListBusiness, WishListBusiness>();
+            services.AddScoped<IWishListRepository, WishListRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
