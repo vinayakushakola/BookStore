@@ -9,6 +9,7 @@ using BookStoreCommonLayer.RequestModels;
 using BookStoreCommonLayer.ResponseModels;
 using BookStoreRepositoryLayer.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BookStoreBusinessLayer.Services
@@ -20,6 +21,18 @@ namespace BookStoreBusinessLayer.Services
         public BookBusiness(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
+        }
+
+        public async Task<List<BookResponse>> GetListOfBooks()
+        {
+            try
+            {
+                return await _bookRepository.GetListOfBooks();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<BookResponse> AddBook(int adminID, BookRequest bookDetails)
         {

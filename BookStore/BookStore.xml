@@ -26,6 +26,12 @@
             <param name="tokenType">Token Type</param>
             <returns>It return token else exception</returns>
         </member>
+        <member name="M:BookStore.Controllers.BookController.GetListOfBooks">
+            <summary>
+            Shows All the Books
+            </summary>
+            <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        </member>
         <member name="M:BookStore.Controllers.BookController.AddBook(BookStoreCommonLayer.RequestModels.BookRequest)">
             <summary>
             Add Book Details

@@ -17,7 +17,6 @@ namespace BookStore.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class BookController : ControllerBase
     {
         private readonly IBookBusiness _bookBusiness;
@@ -31,11 +30,40 @@ namespace BookStore.Controllers
         }
 
         /// <summary>
+        /// Shows All the Books
+        /// </summary>
+        /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetListOfBooks()
+        {
+            try
+            {
+                var data = await _bookBusiness.GetListOfBooks();
+                if (data != null)
+                {
+                    success = true;
+                    message = "List of Books Fetched Successfully";
+                    return Ok(new { success, message, data });
+                }
+                else
+                {
+                    message = "No Data Found";
+                    return NotFound(new { success, message });
+                }
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Add Book Details
         /// </summary>
         /// <param name="book">Book Data</param>
         /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddBook(BookRequest book)
         {
             try

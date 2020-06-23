@@ -9,6 +9,7 @@ using BookStoreCommonLayer.ResponseModels;
 using BookStoreRepositoryLayer.Interfaces;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -31,6 +32,33 @@ namespace BookStoreRepositoryLayer.Services
         {
             string sqlConnectionString = _configuration.GetConnectionString("BookStoreDBConnection");
             conn = new SqlConnection(sqlConnectionString);
+        }
+
+        /// <summary>
+        /// Get List of Books from the database
+        /// </summary>
+        /// <returns>If Data Fetched Successfully return Resonse Data else null or Exception</returns>
+        public async Task<List<BookResponse>> GetListOfBooks()
+        {
+            try
+            {
+                List<BookResponse> bookList = null;
+                SQLConnection();
+                bookList = new List<BookResponse>();
+                using (SqlCommand cmd = new SqlCommand("GetListOfBooks", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    bookList = ListBookResponseModel(dataReader);
+                };
+                return bookList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         /// <summary>
@@ -95,6 +123,39 @@ namespace BookStoreRepositoryLayer.Services
                 return responseData;
             }
             catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// List of Book Response Method
+        /// </summary>
+        /// <param name="dataReader">Sql Data Reader</param>
+        /// <returns>It return List of Book Response Data</returns>
+        private List<BookResponse> ListBookResponseModel(SqlDataReader dataReader)
+        {
+            try
+            {
+                List<BookResponse> bookList = new List<BookResponse>();
+                BookResponse responseData = null;
+                while (dataReader.Read())
+                {
+                    responseData = new BookResponse
+                    {
+                        BookID = Convert.ToInt32(dataReader["BookID"]),
+                        Name = dataReader["Name"].ToString(),
+                        Author = dataReader["Author"].ToString(),
+                        Language = dataReader["Language"].ToString(),
+                        Category = dataReader["Category"].ToString(),
+                        ISBN = dataReader["ISBN"].ToString(),
+                        Pages = dataReader["Pages"].ToString(),
+                    };
+                    bookList.Add(responseData);
+                }
+                return bookList;
+            }
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
