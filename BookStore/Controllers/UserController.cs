@@ -5,6 +5,7 @@
 //
 
 using BookStoreBusinessLayer.Interfaces;
+using BookStoreCommonLayer.MSMQSender;
 using BookStoreCommonLayer.RequestModels;
 using BookStoreCommonLayer.ResponseModels;
 using Microsoft.AspNetCore.Authorization;
@@ -125,6 +126,7 @@ namespace BookStore.Controllers
                     token = GenerateToken(data, "ForgotPassword");
                     success = true;
                     message = "Use this token to Reset Password";
+                    MsmqSender.SendToMsmq(data.Email, token);
                     return Ok(new { success, message, token });
                 }
                 else
