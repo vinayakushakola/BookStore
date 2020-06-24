@@ -61,7 +61,7 @@ namespace BookStoreRepositoryLayer.Services
                             WishListID = Convert.ToInt32(dataReader["WishListID"]),
                             Name = dataReader["Name"].ToString()
                         };
-                        bookList = await GetListOfBooksInWishList(wish.WishListID);
+                        bookList = await GetListOfBooksInWishList(userID, wish.WishListID);
                         wish.Books = bookList;
                         wishList.Add(wish);
                     }
@@ -83,7 +83,7 @@ namespace BookStoreRepositoryLayer.Services
         /// </summary>
         /// <param name="wishListID">WishList-ID</param>
         /// <returns>If Data Fetched Successfully return Response Data else null or Exception</returns>
-        public async Task<List<BookResponse>> GetListOfBooksInWishList(int wishListID)
+        public async Task<List<BookResponse>> GetListOfBooksInWishList(int userID, int wishListID)
         {
             try
             {
@@ -92,6 +92,7 @@ namespace BookStoreRepositoryLayer.Services
                 using(SqlCommand cmd = new SqlCommand("GetListOfBooksByWishListID", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@userID", userID);
                     cmd.Parameters.AddWithValue("@WishListID", wishListID);
 
                     conn.Open();
@@ -104,7 +105,6 @@ namespace BookStoreRepositoryLayer.Services
             {
                 throw new Exception(ex.Message);
             }
-
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace BookStoreRepositoryLayer.Services
         /// <param name="userID">User-ID</param>
         /// <param name="wishList">Wish List Data</param>
         /// <returns>If Data Added Successfully return Response Data else null or Bad Request</returns>
-        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListBookRequest wishListBook)
+        public async Task<BookResponse> AddBookIntoWishList(int userID, int wishListID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace BookStoreRepositoryLayer.Services
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
-                    cmd.Parameters.AddWithValue("@WishListID", wishListBook.WishListID);
+                    cmd.Parameters.AddWithValue("@WishListID", wishListID);
                     cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
 
                     conn.Open();
@@ -181,7 +181,7 @@ namespace BookStoreRepositoryLayer.Services
         /// <param name="userID">User-ID</param>
         /// <param name="wishList">Wish List Data</param>
         /// <returns>If Data Deleted Successfull return true else false or Exception</returns>
-        public async Task<bool> DeleteBookFromWishList(int userID, WishListBookRequest wishListBook)
+        public async Task<bool> DeleteBookFromWishList(int userID, int wishListID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace BookStoreRepositoryLayer.Services
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
-                    cmd.Parameters.AddWithValue("@WishListID", wishListBook.WishListID);
+                    cmd.Parameters.AddWithValue("@WishListID", wishListID);
                     cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
 
                     conn.Open();
@@ -207,7 +207,6 @@ namespace BookStoreRepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
-
 
         /// <summary>
         /// Book Response Method

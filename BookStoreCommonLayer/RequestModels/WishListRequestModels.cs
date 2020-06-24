@@ -17,9 +17,6 @@ namespace BookStoreCommonLayer.RequestModels
     public class WishListBookRequest
     {
         [Required]
-        public int WishListID { get; set; }
-
-        [Required]
         public int BookID { get; set; }
     }
 }

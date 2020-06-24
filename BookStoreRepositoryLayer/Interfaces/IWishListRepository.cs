@@ -15,10 +15,12 @@ namespace BookStoreRepositoryLayer.Interfaces
     {
         Task<WishListsResponnse> GetListOfWishList(int userID);
 
+        Task<List<BookResponse>> GetListOfBooksInWishList(int userID, int wishListID);
+
         Task<WishListResponse> CreateNewWishList(int userID, WishListRequest wishList);
 
-        Task<BookResponse> AddBookIntoWishList(int userID, WishListBookRequest wishListBook);
+        Task<BookResponse> AddBookIntoWishList(int userID, int wishListID, WishListBookRequest wishListBook);
 
-        Task<bool> DeleteBookFromWishList(int userID, WishListBookRequest wishListBook);
+        Task<bool> DeleteBookFromWishList(int userID, int wishListID, WishListBookRequest wishListBook);
     }
 }

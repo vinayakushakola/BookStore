@@ -42,6 +42,25 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
+        public async Task<List<BookResponse>> GetListOfBooksInWishList(int userID, int wishListID)
+        {
+            try
+            {
+                if (wishListID <= 0 || userID <= 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return await _wishListRepository.GetListOfBooksInWishList(userID, wishListID);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<WishListResponse> CreateNewWishList(int userID, WishListRequest wishList)
         {
             try
@@ -61,7 +80,7 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListBookRequest wishListBook)
+        public async Task<BookResponse> AddBookIntoWishList(int userID, int wishListID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -71,7 +90,7 @@ namespace BookStoreBusinessLayer.Services
                 }
                 else
                 {
-                    return await _wishListRepository.AddBookIntoWishList(userID, wishListBook);
+                    return await _wishListRepository.AddBookIntoWishList(userID, wishListID, wishListBook);
                 }
             }
             catch (Exception ex)
@@ -80,7 +99,7 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<bool> DeleteBookFromWishList(int userID, WishListBookRequest wishListBook)
+        public async Task<bool> DeleteBookFromWishList(int userID, int wishListID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -90,7 +109,7 @@ namespace BookStoreBusinessLayer.Services
                 }
                 else
                 {
-                    return await _wishListRepository.DeleteBookFromWishList(userID, wishListBook);
+                    return await _wishListRepository.DeleteBookFromWishList(userID, wishListID, wishListBook);
                 }
             }
             catch (Exception ex)
