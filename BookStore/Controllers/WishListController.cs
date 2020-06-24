@@ -35,7 +35,7 @@ namespace BookStore.Controllers
         /// </summary>
         /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         [HttpGet]
-        public async Task<IActionResult> GetListOgBooksInCart()
+        public async Task<IActionResult> GetListOfWishList()
         {
             try
             {
@@ -46,11 +46,11 @@ namespace BookStore.Controllers
                             (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
                     {
                         int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
-                        var data = await _wishListBusiness.GetListOfBooksInWishList(userID);
+                        var data = await _wishListBusiness.GetListOfWishList(userID);
                         if (data != null)
                         {
                             success = true;
-                            message = "List of Books Fetched Successfully";
+                            message = "List of Books in Wish List Fetched Successfully";
                             return Ok(new { success, message, data });
                         }
                         else
@@ -70,12 +70,12 @@ namespace BookStore.Controllers
         }
 
         /// <summary>
-        /// Add Book into Wish List
+        /// Creates New Wish List
         /// </summary>
         /// <param name="wishList">Wish List Data</param>
         /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         [HttpPost]
-        public async Task<IActionResult> AddBookIntoWishList(WishListRequest wishList)
+        public async Task<IActionResult> CreateNewWishList(WishListRequest wishList)
         {
             try
             {
@@ -86,7 +86,48 @@ namespace BookStore.Controllers
                             (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
                     {
                         int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
-                        var data = await _wishListBusiness.AddBookIntoWishList(userID, wishList);
+                        var data = await _wishListBusiness.CreateNewWishList(userID, wishList);
+                        if (data != null)
+                        {
+                            success = true;
+                            message = "New Wish List Created Successfully";
+                            return Ok(new { success, message, data });
+                        }
+                        else
+                        {
+                            message = "No Data Provided";
+                            return NotFound(new { success, message });
+                        }
+                    }
+                }
+                message = "You should login first before creating new wish list, Token Invalid!";
+                return BadRequest(new { success, message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Add Book into Wish List
+        /// </summary>
+        /// <param name="wishListBook">Wish List Book Data</param>
+        /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        [HttpPost]
+        [Route("Book")]
+        public async Task<IActionResult> AddBookIntoWishList(WishListBookRequest wishListBook)
+        {
+            try
+            {
+                var user = HttpContext.User;
+                if ((user.HasClaim(u => u.Type == "TokenType")) && (user.HasClaim(u => u.Type == "UserRole")))
+                {
+                    if ((user.Claims.FirstOrDefault(u => u.Type == "TokenType").Value == "login") &&
+                            (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
+                    {
+                        int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
+                        var data = await _wishListBusiness.AddBookIntoWishList(userID, wishListBook);
                         if (data != null)
                         {
                             success = true;
@@ -112,10 +153,11 @@ namespace BookStore.Controllers
         /// <summary>
         /// Delete Book From Wish List
         /// </summary>
-        /// <param name="wishList">Wish List Data</param>
+        /// <param name="wishListBook">Wish List Book Data</param>
         /// <returns>If Data Deleted return Ok else Not Found or Bad Request</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteBookFromCart(WishListRequest wishList)
+        [Route("Book")]
+        public async Task<IActionResult> DeleteBookFromCart(WishListBookRequest wishListBook)
         {
             try
             {
@@ -126,7 +168,7 @@ namespace BookStore.Controllers
                             (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
                     {
                         int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
-                        var data = await _wishListBusiness.DeleteBookFromWishList(userID, wishList);
+                        var data = await _wishListBusiness.DeleteBookFromWishList(userID, wishListBook);
                         if (data)
                         {
                             success = true;
@@ -135,7 +177,7 @@ namespace BookStore.Controllers
                         }
                         else
                         {
-                            message = "No Book is present with this ID: " + wishList.BookID;
+                            message = "No Book is present with this ID: ";
                             return NotFound(new { success, message });
                         }
                     }

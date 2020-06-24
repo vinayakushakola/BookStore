@@ -23,7 +23,7 @@ namespace BookStoreBusinessLayer.Services
             _wishListRepository = wishListRepository;
         }
 
-        public async Task<List<BookResponse>> GetListOfBooksInWishList(int userID)
+        public async Task<WishListsResponnse> GetListOfWishList(int userID)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace BookStoreBusinessLayer.Services
                 }
                 else
                 {
-                    return await _wishListRepository.GetListOfBooksInWishList(userID);
+                    return await _wishListRepository.GetListOfWishList(userID);
                 }
             }
             catch (Exception ex)
@@ -42,17 +42,36 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListRequest wishList)
+        public async Task<WishListResponse> CreateNewWishList(int userID, WishListRequest wishList)
         {
             try
             {
-                if (userID <= 0 || wishList.BookID == 0)
+                if (userID <= 0 || wishList == null)
                 {
                     return null;
                 }
                 else
                 {
-                    return await _wishListRepository.AddBookIntoWishList(userID, wishList);
+                    return await _wishListRepository.CreateNewWishList(userID, wishList);
+                }
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListBookRequest wishListBook)
+        {
+            try
+            {
+                if (userID <= 0 || wishListBook == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return await _wishListRepository.AddBookIntoWishList(userID, wishListBook);
                 }
             }
             catch (Exception ex)
@@ -61,17 +80,17 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<bool> DeleteBookFromWishList(int userID, WishListRequest wishList)
+        public async Task<bool> DeleteBookFromWishList(int userID, WishListBookRequest wishListBook)
         {
             try
             {
-                if (userID <= 0 || wishList.BookID <= 0)
+                if (userID <= 0 || wishListBook == null)
                 {
                     return false;
                 }
                 else
                 {
-                    return await _wishListRepository.DeleteBookFromWishList(userID, wishList);
+                    return await _wishListRepository.DeleteBookFromWishList(userID, wishListBook);
                 }
             }
             catch (Exception ex)

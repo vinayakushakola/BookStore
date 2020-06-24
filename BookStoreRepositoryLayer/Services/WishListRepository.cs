@@ -38,26 +38,107 @@ namespace BookStoreRepositoryLayer.Services
         /// Fetch List of Books from the Database
         /// </summary>
         /// <param name="userID">User-ID</param>
-        /// <returns>If Data Fetched Successfull return Response Data else null or Exception</returns>
-        public async Task<List<BookResponse>> GetListOfBooksInWishList(int userID)
+        /// <returns>If Data Fetched Successfully return Response Data else null or Exception</returns>
+        public async Task<WishListsResponnse> GetListOfWishList(int userID)
         {
             try
             {
-                List<BookResponse> bookList = null;
+                WishListsResponnse wishLists = null;
+                List<WishListResponse2> wishList = new List<WishListResponse2>();
+                List<BookResponse> bookList = new List<BookResponse>();
                 SQLConnection();
-                bookList = new List<BookResponse>();
-                using (SqlCommand cmd = new SqlCommand("GetListOfBooksInWishList", conn))
+                using (SqlCommand cmd = new SqlCommand("GetListOfWishListByUserID", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
-                    bookList = ListBookResponseModel(dataReader);
+                    while (dataReader.Read())
+                    {
+                        WishListResponse2 wish = new WishListResponse2
+                        {
+                            WishListID = Convert.ToInt32(dataReader["WishListID"]),
+                            Name = dataReader["Name"].ToString()
+                        };
+                        bookList = await GetListOfBooksInWishList(wish.WishListID);
+                        wish.Books = bookList;
+                        wishList.Add(wish);
+                    }
+                    wishLists = new WishListsResponnse
+                    {
+                        WishLists = wishList
+                    };
                 };
-                return bookList;
+                return wishLists;
             }
             catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// It Fetches List of Books in a Specific Wish List from the database
+        /// </summary>
+        /// <param name="wishListID">WishList-ID</param>
+        /// <returns>If Data Fetched Successfully return Response Data else null or Exception</returns>
+        public async Task<List<BookResponse>> GetListOfBooksInWishList(int wishListID)
+        {
+            try
+            {
+                List<BookResponse> bookList = new List<BookResponse>();
+                SQLConnection();
+                using(SqlCommand cmd = new SqlCommand("GetListOfBooksByWishListID", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@WishListID", wishListID);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    bookList = ListBookResponseModel(dataReader);
+                }
+                return bookList;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
+
+        /// <summary>
+        /// Create New Wish List in the database
+        /// </summary>
+        /// <param name="userID">UserID</param>
+        /// <param name="wishList">Wish List Data</param>
+        /// <returns>If data added successfully return Response Data else null or Exception</returns>
+        public async Task<WishListResponse> CreateNewWishList(int userID, WishListRequest wishList)
+        {
+            try
+            {
+                WishListResponse responseData = null;
+                SQLConnection();
+                using (SqlCommand cmd = new SqlCommand("CreateNewWishList", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.Parameters.AddWithValue("@Name", wishList.Name);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    while (dataReader.Read())
+                    {
+                        responseData = new WishListResponse
+                        {
+                            WishListID = Convert.ToInt32(dataReader["WishListID"]),
+                            Name = dataReader["Name"].ToString()
+                        };
+                    }
+                };
+                return responseData;
+            }
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -69,7 +150,7 @@ namespace BookStoreRepositoryLayer.Services
         /// <param name="userID">User-ID</param>
         /// <param name="wishList">Wish List Data</param>
         /// <returns>If Data Added Successfully return Response Data else null or Bad Request</returns>
-        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListRequest wishList)
+        public async Task<BookResponse> AddBookIntoWishList(int userID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -79,7 +160,8 @@ namespace BookStoreRepositoryLayer.Services
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
-                    cmd.Parameters.AddWithValue("@BookID", wishList.BookID);
+                    cmd.Parameters.AddWithValue("@WishListID", wishListBook.WishListID);
+                    cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
@@ -99,7 +181,7 @@ namespace BookStoreRepositoryLayer.Services
         /// <param name="userID">User-ID</param>
         /// <param name="wishList">Wish List Data</param>
         /// <returns>If Data Deleted Successfull return true else false or Exception</returns>
-        public async Task<bool> DeleteBookFromWishList(int userID, WishListRequest wishList)
+        public async Task<bool> DeleteBookFromWishList(int userID, WishListBookRequest wishListBook)
         {
             try
             {
@@ -108,7 +190,8 @@ namespace BookStoreRepositoryLayer.Services
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
-                    cmd.Parameters.AddWithValue("@BookID", wishList.BookID);
+                    cmd.Parameters.AddWithValue("@WishListID", wishListBook.WishListID);
+                    cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
 
                     conn.Open();
                     int count = await cmd.ExecuteNonQueryAsync();
