@@ -23,7 +23,7 @@ namespace BookStoreBusinessLayer.Services
             _cartRepository = cartRepository;
         }
 
-        public async Task<List<BookResponse>> GetListOfBooksInCart(int userID)
+        public async Task<List<CartBookResponse>> GetListOfBooksInCart(int userID)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<BookResponse> AddBookIntoCart(int userID, CartRequest cart)
+        public async Task<CartBookResponse> AddBookIntoCart(int userID, CartRequest cart)
         {
             try
             {
@@ -80,5 +80,23 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
+        public async Task<PurchaseResponse> Purchase(int userID, int cartID, PurchaseRequest purchase)
+        {
+            try
+            {
+                if (userID <= 0 || purchase == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return await _cartRepository.Purchase(userID, cartID, purchase);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

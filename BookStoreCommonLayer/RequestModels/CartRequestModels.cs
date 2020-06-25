@@ -13,4 +13,13 @@ namespace BookStoreCommonLayer.RequestModels
         [Required]
         public int BookID { get; set; }
     }
+
+    public class PurchaseRequest
+    {
+        [Required]
+        public int BookID { get; set; }
+
+        [Required]
+        public string Address { get; set; }
+    }
 }

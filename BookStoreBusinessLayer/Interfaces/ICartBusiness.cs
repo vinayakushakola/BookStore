@@ -13,10 +13,12 @@ namespace BookStoreBusinessLayer.Interfaces
 {
     public interface ICartBusiness
     {
-        Task<List<BookResponse>> GetListOfBooksInCart(int userID);
+        Task<List<CartBookResponse>> GetListOfBooksInCart(int userID);
         
-        Task<BookResponse> AddBookIntoCart(int userID, CartRequest cart);
+        Task<CartBookResponse> AddBookIntoCart(int userID, CartRequest cart);
 
         Task<bool> DeleteBookFromCart(int userID, CartRequest cart);
+
+        Task<PurchaseResponse> Purchase(int userID, int cartID, PurchaseRequest purchase);
     }
 }

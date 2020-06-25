@@ -22,5 +22,7 @@ namespace BookStoreRepositoryLayer.Interfaces
         Task<BookResponse> AddBookIntoWishList(int userID, int wishListID, WishListBookRequest wishListBook);
 
         Task<bool> DeleteBookFromWishList(int userID, int wishListID, WishListBookRequest wishListBook);
+
+        Task<CartBookResponse> MoveToCart(int userID, int wishListID, WishListBookRequest wishListBook);
     }
 }

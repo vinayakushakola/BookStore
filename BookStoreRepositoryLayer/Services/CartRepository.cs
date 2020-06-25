@@ -39,13 +39,13 @@ namespace BookStoreRepositoryLayer.Services
         /// </summary>
         /// <param name="userID">User-ID</param>
         /// <returns>If Data Fetched Successfull return Response Data else null or Exception</returns>
-        public async Task<List<BookResponse>> GetListOfBooksInCart(int userID)
+        public async Task<List<CartBookResponse>> GetListOfBooksInCart(int userID)
         {
             try
             {
-                List<BookResponse> bookList = null;
+                List<CartBookResponse> bookList = null;
                 SQLConnection();
-                bookList = new List<BookResponse>();
+                bookList = new List<CartBookResponse>();
                 using (SqlCommand cmd = new SqlCommand("GetListOfBooksInCart", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -69,17 +69,18 @@ namespace BookStoreRepositoryLayer.Services
         /// <param name="userID">User-ID</param>
         /// <param name="cart">Cart Data</param>
         /// <returns>If Data Added Successfully return Response Data else null or Bad Request</returns>
-        public async Task<BookResponse> AddBookIntoCart(int userID, CartRequest cart)
+        public async Task<CartBookResponse> AddBookIntoCart(int userID, CartRequest cart)
         {
             try
             {
-                BookResponse responseData = null;
+                CartBookResponse responseData = null;
                 SQLConnection();
                 using (SqlCommand cmd = new SqlCommand("AddBookIntoCart", conn))
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
                     cmd.Parameters.AddWithValue("@BookID", cart.BookID);
+                    cmd.Parameters.AddWithValue("@IsUsed", false);
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
@@ -125,21 +126,62 @@ namespace BookStoreRepositoryLayer.Services
             }
         }
 
+        /// <summary>
+        /// Add Details of Purchase
+        /// </summary>
+        /// <param name="userID">UserID</param>
+        /// <param name="purchase">Purchase Data</param>
+        /// <returns>If Data added successfully return Response Data else null or Exception</returns>
+        public async Task<PurchaseResponse> Purchase(int userID, int cartID, PurchaseRequest purchase)
+        {
+            try
+            {
+                PurchaseResponse responseData = null;
+                SQLConnection();
+                using (SqlCommand cmd = new SqlCommand("AddPurchaseDetails", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.Parameters.AddWithValue("@CartID", cartID);
+                    cmd.Parameters.AddWithValue("@IsUsed", true);
+                    cmd.Parameters.AddWithValue("@BookID", purchase.BookID);
+                    cmd.Parameters.AddWithValue("@Address", purchase.Address);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    while (dataReader.Read())
+                    {
+                        responseData = new PurchaseResponse
+                        {
+                            PurchaseID = Convert.ToInt32(dataReader["PurchaseID"]),
+                            BookID = Convert.ToInt32(dataReader["BookID"]),
+                            Address = dataReader["Address"].ToString()
+                        };
+                    }
+                };
+                return responseData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         /// <summary>
         /// Book Response Method
         /// </summary>
         /// <param name="dataReader">Sql Data Reader</param>
         /// <returns>It return Book Response Data</returns>
-        private BookResponse BookResponseModel(SqlDataReader dataReader)
+        public static CartBookResponse BookResponseModel(SqlDataReader dataReader)
         {
             try
             {
-                BookResponse responseData = null;
+                CartBookResponse responseData = null;
                 while (dataReader.Read())
                 {
-                    responseData = new BookResponse
+                    responseData = new CartBookResponse
                     {
+                        CartID = Convert.ToInt32(dataReader["CartID"]),
                         BookID = Convert.ToInt32(dataReader["BookID"]),
                         Name = dataReader["Name"].ToString(),
                         Author = dataReader["Author"].ToString(),
@@ -162,16 +204,17 @@ namespace BookStoreRepositoryLayer.Services
         /// </summary>
         /// <param name="dataReader">Sql Data Reader</param>
         /// <returns>It return List of Book Response Data</returns>
-        private List<BookResponse> ListBookResponseModel(SqlDataReader dataReader)
+        private List<CartBookResponse> ListBookResponseModel(SqlDataReader dataReader)
         {
             try
             {
-                List<BookResponse> bookList = new List<BookResponse>();
-                BookResponse responseData = null;
+                List<CartBookResponse> bookList = new List<CartBookResponse>();
+                CartBookResponse responseData = null;
                 while (dataReader.Read())
                 {
-                    responseData = new BookResponse
+                    responseData = new CartBookResponse
                     {
+                        CartID = Convert.ToInt32(dataReader["CartID"]),
                         BookID = Convert.ToInt32(dataReader["BookID"]),
                         Name = dataReader["Name"].ToString(),
                         Author = dataReader["Author"].ToString(),

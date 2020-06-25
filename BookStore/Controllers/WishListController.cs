@@ -230,5 +230,46 @@ namespace BookStore.Controllers
                 return BadRequest(new { ex.Message });
             }
         }
+
+        /// <summary>
+        /// Move Book to Cart
+        /// </summary>
+        /// <param name="wishListID">WishListID</param>
+        /// <param name="wishListBook">Wish List Book Data</param>
+        /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        [HttpPost("{wishListID}/Move")]
+        public async Task<IActionResult> MoveToCart(int wishListID, WishListBookRequest wishListBook)
+        {
+            try
+            {
+                var user = HttpContext.User;
+                if ((user.HasClaim(u => u.Type == "TokenType")) && (user.HasClaim(u => u.Type == "UserRole")))
+                {
+                    if ((user.Claims.FirstOrDefault(u => u.Type == "TokenType").Value == "login") &&
+                            (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
+                    {
+                        int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
+                        var data = await _wishListBusiness.MoveToCart(userID, wishListID, wishListBook);
+                        if (data != null)
+                        {
+                            success = true;
+                            message = "Book Moved to Cart Successfully";
+                            return Ok(new { success, message, data });
+                        }
+                        else
+                        {
+                            message = "No Book is Present";
+                            return NotFound(new { success, message });
+                        }
+                    }
+                }
+                message = "Token Invalid!";
+                return BadRequest(new { success, message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { ex.Message });
+            }
+        }
     }
 }

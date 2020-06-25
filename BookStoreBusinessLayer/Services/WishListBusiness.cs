@@ -117,5 +117,24 @@ namespace BookStoreBusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<CartBookResponse> MoveToCart(int userID, int wishListID, WishListBookRequest wishListBook)
+        {
+            try
+            {
+                if (userID <= 0 || wishListBook == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return await _wishListRepository.MoveToCart(userID, wishListID, wishListBook);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

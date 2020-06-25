@@ -162,6 +162,7 @@ namespace BookStoreRepositoryLayer.Services
                     cmd.Parameters.AddWithValue("@UserID", userID);
                     cmd.Parameters.AddWithValue("@WishListID", wishListID);
                     cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
+                    cmd.Parameters.AddWithValue("@IsMoved", false);
 
                     conn.Open();
                     SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
@@ -207,6 +208,40 @@ namespace BookStoreRepositoryLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Add Move Book Details in the database
+        /// </summary>
+        /// <param name="userID">UserID</param>
+        /// <param name="wishListID">WishListID</param>
+        /// <param name="wishListBook">Wish List Book Data</param>
+        /// <returns>If Data Found return Response Data else null or Exeption</returns>
+        public async Task<CartBookResponse> MoveToCart(int userID, int wishListID, WishListBookRequest wishListBook)
+        {
+            try
+            {
+                CartBookResponse responseData = null;
+                SQLConnection();
+                using (SqlCommand cmd = new SqlCommand("MoveBookToCart", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@UserID", userID);
+                    cmd.Parameters.AddWithValue("@WishListID", wishListID);
+                    cmd.Parameters.AddWithValue("@BookID", wishListBook.BookID);
+                    cmd.Parameters.AddWithValue("@IsMoved", true);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    responseData = CartRepository.BookResponseModel(dataReader);
+                };
+                return responseData;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// Book Response Method
