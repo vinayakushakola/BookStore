@@ -98,6 +98,34 @@ namespace BookStoreRepositoryLayer.Services
         }
 
         /// <summary>
+        /// Search book by Name in the database
+        /// </summary>
+        /// <param name="bookSearch">Book Search Data</param>
+        /// <returns>If Data Fetched return Response Data else null or Exception</returns>
+        public async Task<List<BookResponse>> BookSearch(BookSearchRequest bookSearch)
+        {
+            try
+            {
+                List<BookResponse> bookList = new List<BookResponse>();
+                SQLConnection();
+                using(SqlCommand cmd = new SqlCommand("SearchBookByName", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@SearchText", bookSearch.Search);
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    bookList = ListBookResponseModel(dataReader);
+                };
+                return bookList;
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Book Response Method
         /// </summary>
         /// <param name="dataReader">Sql Data Reader</param>

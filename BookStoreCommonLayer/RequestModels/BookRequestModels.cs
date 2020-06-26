@@ -28,4 +28,10 @@ namespace BookStoreCommonLayer.RequestModels
         [Required]
         public string Pages { get; set; }
     }
+
+    public class BookSearchRequest
+    {
+        [Required]
+        public string Search { get; set; }
+    }
 }

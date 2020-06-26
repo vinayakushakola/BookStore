@@ -97,5 +97,35 @@ namespace BookStore.Controllers
                 return BadRequest(new { ex.Message });
             }
         }
+
+        /// <summary>
+        /// Search Book by Name
+        /// </summary>
+        /// <param name="bookSearch">Book Search Data</param>
+        /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        [HttpPost]
+        [Route("Search")]
+        public async Task<IActionResult> BookSearch(BookSearchRequest bookSearch)
+        {
+            try
+            {
+                var data = await _bookBusiness.SearchBook(bookSearch);
+                if (data != null)
+                {
+                    success = true;
+                    message = "Book Fetched Successfully";
+                    return Ok(new { success, message, data });
+                }
+                else
+                {
+                    message = "Book Not Found";
+                    return NotFound(new { success, message });
+                }
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

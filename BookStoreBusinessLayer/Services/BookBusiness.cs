@@ -48,5 +48,20 @@ namespace BookStoreBusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<BookResponse>> SearchBook(BookSearchRequest bookSearch)
+        {
+            try
+            {
+                if (bookSearch == null)
+                    return null;
+                else
+                    return await _bookRepository.BookSearch(bookSearch);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
