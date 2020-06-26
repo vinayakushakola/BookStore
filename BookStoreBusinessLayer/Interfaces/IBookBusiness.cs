@@ -18,5 +18,7 @@ namespace BookStoreBusinessLayer.Interfaces
         Task<BookResponse> AddBook(int adminID, BookRequest bookDetails);
 
         Task<List<BookResponse>> SearchBook(BookSearchRequest bookSearch);
+
+        Task<List<BookResponse>> SortBooks();
     }
 }

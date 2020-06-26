@@ -18,5 +18,7 @@ namespace BookStoreRepositoryLayer.Interfaces
         Task<BookResponse> AddBook(int adminID, BookRequest bookDetails);
 
         Task<List<BookResponse>> BookSearch(BookSearchRequest bookSearch);
+
+        Task<List<BookResponse>> SortBooks();
     }
 }

@@ -126,6 +126,35 @@ namespace BookStoreRepositoryLayer.Services
         }
 
         /// <summary>
+        /// Fetch Sorted Books from the database
+        /// </summary>
+        /// <returns>If Data Fetched Successfully return Response Data else null or Exception</returns>
+        public async Task<List<BookResponse>> SortBooks()
+        {
+            try
+            {
+                List<BookResponse> bookList = new List<BookResponse>();
+                SQLConnection();
+                using(SqlCommand cmd = new SqlCommand("SortBooks", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+
+                    conn.Open();
+                    SqlDataReader dataReader = await cmd.ExecuteReaderAsync();
+                    bookList = ListBookResponseModel(dataReader);
+                }
+                return bookList;
+
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+
+        /// <summary>
         /// Book Response Method
         /// </summary>
         /// <param name="dataReader">Sql Data Reader</param>

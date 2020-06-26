@@ -127,5 +127,34 @@ namespace BookStore.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        /// <summary>
+        /// Shows Books in Ascending order
+        /// </summary>
+        /// <returns>If Data Found return Ok else Not Found or Bad Request</returns>
+        [HttpGet]
+        [Route("Sort")]
+        public async Task<IActionResult> SortBooks()
+        {
+            try
+            {
+                var data = await _bookBusiness.SortBooks();
+                if (data != null)
+                {
+                    success = true;
+                    message = "Sorted Books Fetched Successfully";
+                    return Ok(new { success, message, data });
+                }
+                else
+                {
+                    message = "Book Not Found";
+                    return NotFound(new { success, message });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

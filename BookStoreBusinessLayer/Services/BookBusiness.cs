@@ -63,5 +63,17 @@ namespace BookStoreBusinessLayer.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<List<BookResponse>> SortBooks()
+        {
+            try
+            {
+                return await _bookRepository.SortBooks();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }
