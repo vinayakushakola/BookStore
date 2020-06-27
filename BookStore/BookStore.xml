@@ -65,11 +65,11 @@
             <param name="cart">Cart Data</param>
             <returns>If Data Found return Ok else Not Found or Bad Request</returns>
         </member>
-        <member name="M:BookStore.Controllers.CartController.DeleteBookFromCart(BookStoreCommonLayer.RequestModels.CartRequest)">
+        <member name="M:BookStore.Controllers.CartController.DeleteBookFromCart(System.Int32)">
             <summary>
             Delete Book From Cart
             </summary>
-            <param name="cart">Cart Data</param>
+            <param name="cartID">CartID</param>
             <returns>If Data Deleted return Ok else Not Found or Bad Request</returns>
         </member>
         <member name="M:BookStore.Controllers.CartController.Purchase(System.Int32,BookStoreCommonLayer.RequestModels.PurchaseRequest)">

@@ -98,9 +98,9 @@ namespace BookStoreRepositoryLayer.Services
         /// Delete Book From the Cart in the database
         /// </summary>
         /// <param name="userID">User-ID</param>
-        /// <param name="cart">Cart Data</param>
+        /// <param name="cartID">Cart-ID</param>
         /// <returns>If Data Deleted Successfull return true else false or Exception</returns>
-        public async Task<bool> DeleteBookFromCart(int userID, CartRequest cart)
+        public async Task<bool> DeleteBookFromCart(int userID, int cartID)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace BookStoreRepositoryLayer.Services
                 {
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@UserID", userID);
-                    cmd.Parameters.AddWithValue("@BookID", cart.BookID);
+                    cmd.Parameters.AddWithValue("@CartID", cartID);
 
                     conn.Open();
                     int count = await cmd.ExecuteNonQueryAsync();

@@ -17,7 +17,7 @@ namespace BookStoreBusinessLayer.Interfaces
         
         Task<CartBookResponse> AddBookIntoCart(int userID, CartRequest cart);
 
-        Task<bool> DeleteBookFromCart(int userID, CartRequest cart);
+        Task<bool> DeleteBookFromCart(int userID, int cartID);
 
         Task<PurchaseResponse> Purchase(int userID, int cartID, PurchaseRequest purchase);
     }

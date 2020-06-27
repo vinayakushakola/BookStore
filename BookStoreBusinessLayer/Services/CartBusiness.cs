@@ -61,17 +61,17 @@ namespace BookStoreBusinessLayer.Services
             }
         }
 
-        public async Task<bool> DeleteBookFromCart(int userID, CartRequest cart)
+        public async Task<bool> DeleteBookFromCart(int userID, int cartID)
         {
             try
             {
-                if (userID <= 0 || cart.BookID <= 0)
+                if (userID <= 0 || cartID <= 0)
                 {
                     return false;
                 }
                 else
                 {
-                    return await _cartRepository.DeleteBookFromCart(userID, cart);
+                    return await _cartRepository.DeleteBookFromCart(userID, cartID);
                 }
             }
             catch (Exception ex)

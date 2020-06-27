@@ -111,10 +111,10 @@ namespace BookStore.Controllers
         /// <summary>
         /// Delete Book From Cart
         /// </summary>
-        /// <param name="cart">Cart Data</param>
+        /// <param name="cartID">CartID</param>
         /// <returns>If Data Deleted return Ok else Not Found or Bad Request</returns>
-        [HttpDelete]
-        public async Task<IActionResult> DeleteBookFromCart(CartRequest cart)
+        [HttpDelete("{cartID}")]
+        public async Task<IActionResult> DeleteBookFromCart(int cartID)
         {
             try
             {
@@ -125,7 +125,7 @@ namespace BookStore.Controllers
                             (user.Claims.FirstOrDefault(u => u.Type == "UserRole").Value == "User"))
                     {
                         int userID = Convert.ToInt32(user.Claims.FirstOrDefault(u => u.Type == "UserID").Value);
-                        var data = await _cartBusiness.DeleteBookFromCart(userID, cart);
+                        var data = await _cartBusiness.DeleteBookFromCart(userID, cartID);
                         if (data)
                         {
                             success = true;
@@ -134,7 +134,7 @@ namespace BookStore.Controllers
                         }
                         else
                         {
-                            message = "No Book is present with this ID: "+ cart.BookID;
+                            message = "No Cart is present with this ID: " + cartID;
                             return NotFound(new { success, message });
                         }
                     }
