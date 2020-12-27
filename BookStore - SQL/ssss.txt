@@ -1,0 +1,39 @@
+CREATE TABLE WishListMapping
+(
+	UserID int,
+	WishListID int,
+	BookID int,
+	IsMoved bit,
+	Foreign Key(UserID)
+	References Users(UserID),
+	Foreign Key(WishListID)
+	References WishList(WishListID),
+	Foreign Key (BookID)
+	References Books(BookID)
+)
+CREATE Table Cart
+(
+	CartID int Primary Key Identity,
+	UserID int,
+	BookID int,
+	IsUsed bit,
+	Foreign Key(UserID)
+	References Users(UserID),
+	Foreign Key (BookID)
+	References Books(BookID)
+)
+
+CREATE Table Purchase 
+(
+	PurchaseID int Identity Primary Key,
+	UserID int,
+	CartID int,
+	BookID int,
+	Address varchar(300),
+	Foreign Key(UserID)
+	References Users(UserID),
+	Foreign Key(CartID)
+	References Cart(CartID),
+	Foreign Key (BookID)
+	References Books(BookID)
+)

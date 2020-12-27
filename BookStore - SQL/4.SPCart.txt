@@ -1,0 +1,44 @@
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Add Book Into Cart
+Purpose of SP		: It Insert UserID & BookID
+Database			: BookStoreDB
+
+Create Date			: June 23, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 23, 2020
+
+******************************************************************************/
+CREATE PROC AddBookIntoCart
+(
+	@UserID int,
+	@BookID int
+)
+AS
+BEGIN
+	If Exists(Select UserID From Users Where UserID = @UserID)
+	BEGIN
+		BEGIN Transaction
+			Insert Into
+			Cart(UserID, BookID)
+			Values(
+					@UserID,
+					@BookID
+				  )
+		Commit Transaction
+		Select * 
+		From Books 
+		Where BookID = @BookID
+	END
+	ELSE
+	BEGIN
+		Rollback Transaction
+	END
+END
+

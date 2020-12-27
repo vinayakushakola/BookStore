@@ -1,0 +1,50 @@
+-----------------------Add Book-----------------------------
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Add Book Details
+Purpose of SP		: It Insert Book details into the table
+Database			: BookStoreDB
+
+Create Date			: June 23, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 23, 2020
+
+******************************************************************************/
+Alter Proc AddBookDetails
+(
+	@AdminID int,
+	@Name varchar(20),
+	@Author varchar(20),
+	@Language varchar(20),
+	@Category varchar(20),
+	@ISBN varchar(15),
+	@Pages varchar(10)
+)
+AS
+BEGIN
+	IF Exists(Select AdminID,Email From Admins Where AdminID = @AdminID)
+	BEGIN
+		BEGIN TRANSACTION
+			Insert Into 
+			Books(Name,Author,Language,Category,ISBN,Pages)
+			Values(
+					@Name,
+					@Author,
+					@Language,
+					@Category,
+					@ISBN,
+					@Pages
+				  )
+		Commit Transaction
+	END
+	ELSE
+	BEGIN
+		RollBack Transaction
+	END
+END

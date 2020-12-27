@@ -1,0 +1,180 @@
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Add Users
+Purpose of SP		: It Insert Users Data 
+Database			: BookStoreDB
+
+Create Date			: June 21, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 21, 2020
+
+******************************************************************************/
+CREATE PROC AddUsers
+(
+	@FirstName varchar(20),
+	@LastName varchar(20),
+	@Mobile varchar(15),
+	@Email varchar(20),
+	@Password varchar(20),
+	@IsActive bit,
+	@UserRole varchar(10),
+	@CreatedDate datetime,
+	@ModifiedDate datetime
+)
+AS
+BEGIN
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			-- Insert User details
+			Insert into
+				Users(FirstName,LastName,Mobile,Email,Password,IsActive,UserRole,CreatedDate,ModifiedDate)
+			Values(
+					@FirstName,@LastName,@Mobile,@Email,@Password,@IsActive,@UserRole,@CreatedDate,@ModifiedDate
+				  )
+        -- If data Insert succeeds, commit the transaction
+        COMMIT TRANSACTION;  
+		Select UserID,FirstName,LastName,Mobile,Email,IsActive,UserRole,CreatedDate,ModifiedDate 
+		From Users
+		Where Email = @Email
+    END TRY
+    BEGIN CATCH
+        -- Report exception
+        EXEC ReportError;
+        
+        PRINT  N'The transaction is in an uncommittable state.' +  
+                'Rolling back transaction.'  
+
+        ROLLBACK TRANSACTION;  
+
+    END CATCH
+END
+
+
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Validate User Login
+Purpose of SP		: It Checks the User Login Details 
+Database			: BookStoreDB
+
+Create Date			: June 22, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 22, 2020
+
+******************************************************************************/
+ALTER Procedure ValidateUserLogin
+(
+	@Email varchar(20),
+	@Password varchar(20),
+	@UserRole varchar(20)
+)
+AS
+BEGIN
+	Declare @Status int 
+	If Exists(SELECT Email, Password from Users Where Email=@Email AND Password=@Password)
+		begin
+			begin transaction
+				set @Status=1
+				SELECT UserID,FirstName,LastName,Mobile,Email,IsActive,UserRole,CreatedDate,ModifiedDate 
+				From Users 
+				Where Email=@Email AND Password=@Password  AND UserRole=@UserRole
+			commit transaction
+			print 'Login Successfully'
+		end
+	else
+		begin
+			begin transaction
+				set @Status=0
+			rollback transaction
+			print 'Failed To Login'
+		end
+	return @Status
+END
+GO
+  
+
+
+
+---Check Email Exists---
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Check Email Exists
+Purpose of SP		: It Checks Email exists or not 
+Database			: BookStoreDB
+
+Create Date			: June 22, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 22, 2020
+
+******************************************************************************/
+CREATE Procedure CheckEmailExists
+(
+	@Email varchar(20)
+)
+AS
+BEGIN
+	If Exists(Select Email from Users Where Email = @Email)
+	BEGIN
+		begin transaction
+			SELECT UserID,FirstName,LastName,Mobile,Email,IsActive,UserRole,CreatedDate,ModifiedDate 
+			From Users 
+			Where Email=@Email
+		commit transaction
+	END
+END
+GO
+  
+
+
+
+---Reset---
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Reset User Password
+Purpose of SP		: It Reset Password
+Database			: BookStoreDB
+
+Create Date			: June 22, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 22, 2020
+
+******************************************************************************/
+CREATE Procedure ResetAdminPassword
+(
+	@UserID int,
+	@Password varchar(20)
+)
+as
+BEGIN
+	If Exists(Select UserID From Users Where UserID = @UserID)
+	BEGIN
+		BEGIN Transaction
+			Update Users 
+			Set Password = @Password 
+			Where UserID = @UserID;
+		Commit Transaction
+	END
+END

@@ -1,0 +1,51 @@
+CREATE TABLE Admins
+(
+	AdminID int Primary Key Identity,
+	FirstName varchar(20),
+	LastName varchar(20),
+	Email varchar(40) Unique,
+	Password varchar(20),
+	IsActive bit,
+	UserRole varchar(10),
+	CreatedDate datetime,
+	ModifiedDate datetime
+);
+
+CREATE TABLE Users
+(
+	UserID int Primary Key Identity,
+	FirstName varchar(20),
+	LastName varchar(20),
+	Mobile varchar(15),
+	Email varchar(40) Unique,
+	Password varchar(20),
+	IsActive bit,
+	UserRole varchar(10),
+	CreatedDate datetime,
+	ModifiedDate datetime
+);
+
+CREATE TABLE Books
+(
+	BookID int Primary Key Identity,
+	Name varchar(40),
+	Author varchar(20),
+	Language varchar(20),
+	Category varchar(20),
+	ISBN varchar(13) Unique,
+	Pages varchar(10)
+);
+
+CREATE TABLE Cart
+(
+	UserID int,
+	BookID int,
+	IsDeleted bit
+);
+
+CREATE TABLE WishList
+(
+	UserID int,
+	BookID int,
+	IsDeleted bit
+);

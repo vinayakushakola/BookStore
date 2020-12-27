@@ -1,0 +1,32 @@
+{
+  "Name": "Think and Grow Rich",
+  "Author": "Napoleon Hill",
+  "Language": "English",
+  "Category": "Self-Dev",
+  "ISBN": "9781788441025",
+  "Pages": "238"
+}
+{
+  "Name": "The Psychology of Investing",
+  "Author": "Mary Buffett",
+  "Language": "English",
+  "Category": "Investing",
+  "ISBN": "9780132302340",
+  "Pages": "128"
+}
+{
+  "Name": "Frankenstein ",
+  "Author": "Mary Wollstonecraft",
+  "Language": "English",
+  "Category": "Horror",
+  "ISBN": "9781502489111",
+  "Pages": "238"
+}
+{
+  "Name": "The Discovery of India",
+  "Author": "Jawaharlal Nehru",
+  "Language": "English",
+  "Category": "History",
+  "ISBN": "9780143031031",
+  "Pages": "656"
+}

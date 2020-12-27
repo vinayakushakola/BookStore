@@ -1,0 +1,259 @@
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Report Error
+Purpose of SP		: It Reports if error occured 
+Database			: BookStoreDB
+
+Create Date			: June 21, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 21, 2020
+
+******************************************************************************/
+CREATE PROC ReportError
+AS
+    SELECT   
+        ERROR_NUMBER() AS ErrorNumber  
+        ,ERROR_SEVERITY() AS ErrorSeverity  
+        ,ERROR_STATE() AS ErrorState  
+        ,ERROR_LINE () AS ErrorLine  
+        ,ERROR_PROCEDURE() AS ErrorProcedure  
+        ,ERROR_MESSAGE() AS ErrorMessage;  
+GO
+
+
+
+-----------------------InsertAdmin-------------------
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Add Admin Details
+Purpose of SP		: It Insert the Admin Details 
+Database			: BookStoreDB
+
+Create Date			: June 21, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 21, 2020
+
+******************************************************************************/
+ALTER PROC AddAdminDetails
+(
+	@FirstName varchar(20),
+	@LastName varchar(20),
+	@Email varchar(20),
+	@Password varchar(20),
+	@IsActive bit,
+	@UserRole varchar(10),
+	@CreatedDate datetime,
+	@ModifiedDate datetime
+)
+AS
+BEGIN
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			-- Insert admin details
+			Insert Into 
+				Admins(FirstName,LastName,Email,Password,IsActive,UserRole,CreatedDate,ModifiedDate)
+			Values(
+					   @FirstName,@LastName,@Email,@Password,@IsActive,@UserRole,@CreatedDate,@ModifiedDate
+				  )
+			
+        -- If data insert succeed, commit the transaction
+        COMMIT TRANSACTION;  
+		Select AdminID,FirstName,LastName,Email,IsActive,UserRole,CreatedDate,ModifiedDate 
+		From Admins 
+		Where Email = @Email
+    END TRY
+    BEGIN CATCH
+        -- Report exception
+        EXEC ReportError;
+        
+        PRINT  N'The transaction is in an uncommittable state.' +  
+                'Rolling back transaction.'  
+
+        ROLLBACK TRANSACTION;  
+
+    END CATCH
+END
+GO
+
+-----Login---
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Validate Admin Login
+Purpose of SP		: It Checks the Admin Login Details 
+Database			: BookStoreDB
+
+Create Date			: June 22, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 22, 2020
+
+******************************************************************************/
+CREATE Procedure ValidateAdminLogin
+(
+	@Email varchar(20),
+	@Password varchar(20),
+	@UserRole varchar(20)
+)
+AS
+BEGIN
+	Declare @Status int 
+	If Exists(SELECT Email, Password from Admins Where Email=@Email AND Password=@Password)
+		begin
+			begin transaction
+				set @Status=1
+				SELECT AdminID,FirstName,LastName,Email,IsActive,UserRole,CreatedDate,ModifiedDate 
+				From Admins 
+				Where Email=@Email AND Password=@Password  AND UserRole=@UserRole
+			commit transaction
+			print 'Login Successfully'
+		end
+	else
+		begin
+			begin transaction
+				set @Status=0
+			rollback transaction
+			print 'Failed To Login'
+		end
+	return @Status
+END
+GO
+  
+
+
+
+
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Delete Admin Details
+Purpose of SP		: It Delete the Admin Data 
+Database			: BookStoreDB
+
+Create Date			: June 21, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 21, 2020
+
+******************************************************************************/
+CREATE PROC DeleteAdminDetails
+(
+	@ID int
+)
+AS
+BEGIN
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			-- Delete admin details
+			Delete From Admins 
+			Where ID = @ID
+
+        -- If data delete succeeds, commit the transaction
+        COMMIT TRANSACTION;  
+    END TRY
+    BEGIN CATCH
+        -- Report exception
+        EXEC ReportError;
+        
+        -- Test if the transaction is uncommittable.  
+        IF (XACT_STATE()) = -1  
+        BEGIN  
+            PRINT  N'The transaction is in an uncommittable state.' +  
+                    'Rolling back transaction.'  
+            ROLLBACK TRANSACTION;  
+        END;  
+        
+        -- Test if the transaction is committable.  
+        IF (XACT_STATE()) = 1  
+        BEGIN  
+            PRINT N'The transaction is committable.' +  
+                'Committing transaction.'  
+            COMMIT TRANSACTION;     
+        END;  
+    END CATCH
+END
+GO
+
+
+-----Get----
+USE BookStoreDB
+GO
+/*****************************************************************************
+SP Name				: Get All Admins 
+Purpose of SP		: It Get the Admin Data 
+Database			: BookStoreDB
+
+Create Date			: June 21, 2020
+Author				: Vinayak Ushakola
+
+History
+----------------------------------------------------------------------------
+Sr No		Description			Modified/Created By			Date Modified
+----------------------------------------------------------------------------
+1			Created SP			Vinayak Ushakola			June 21, 2020
+
+******************************************************************************/
+ALTER PROC GetAllAdmins
+AS
+BEGIN
+	BEGIN TRY
+        BEGIN TRANSACTION;
+			-- Get admin details
+			Select FirstName, LastName From Admins
+
+        -- If data fetch succeeds, commit the transaction
+        COMMIT TRANSACTION;  
+    END TRY
+    BEGIN CATCH
+        -- Report exception
+        EXEC ReportError;
+        
+        -- Test if the transaction is uncommittable.  
+        IF (XACT_STATE()) = -1  
+        BEGIN  
+            PRINT  N'The transaction is in an uncommittable state.' +  
+                    'Rolling back transaction.'  
+            ROLLBACK TRANSACTION;  
+        END;  
+        
+        -- Test if the transaction is committable.  
+        IF (XACT_STATE()) = 1  
+        BEGIN  
+            PRINT N'The transaction is committable.' +  
+                'Committing transaction.'  
+            COMMIT TRANSACTION;     
+        END;  
+    END CATCH
+END
+GO
+
+
+
+
+
+
+
+
+
+
+
